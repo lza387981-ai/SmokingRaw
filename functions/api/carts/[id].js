@@ -1,5 +1,6 @@
 export async function onRequestGet({ params, env }) {
-  const id = String(params.id || "");
+  await env.DB.prepare(`DELETE FROM shared_carts WHERE datetime(created_at) <= datetime('now', '-35 minutes')`).run();
+  const id = String(params.id || '');
   if (!/^[a-f0-9]{32}$/.test(id))
     return Response.json({ error: "Некорректная ссылка" }, { status: 400 });
   const row = await env.DB.prepare(
