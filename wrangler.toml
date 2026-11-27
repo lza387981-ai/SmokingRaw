@@ -5,7 +5,7 @@ pages_build_output_dir = "./web"
 [[d1_databases]]
 binding = "DB"
 database_name = "smokingraw-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "40b1585c-38c1-4092-961b-a9ac517243d7"
 
 [[r2_buckets]]
 binding = "IMAGES"
