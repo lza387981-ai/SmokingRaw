@@ -10,7 +10,8 @@
 <label>Описание</label><textarea id="description" maxlength="300" placeholder="Краткое описание"></textarea>
 <label>Категория</label><input id="category" required maxlength="40" placeholder="Одежда">
 <label>Цена, ₽</label><input id="price" type="number" min="0" step="1" required>
-<label>Фотография товара</label><input id="photoFile" type="file" accept="image/jpeg,image/png,image/webp"><div class="upload-note">JPG, PNG или WebP · до 5 МБ. Файл загрузится в Cloudflare R2.</div><label>Или ссылка на фото (https://)</label><input id="image" type="url" placeholder="https://...">
+<label>Ссылка на фотографию (https://)</label><input id="image" type="url" placeholder="https://...">
+<div class="upload-note">Пока без загрузки файлов: вставь прямую HTTPS-ссылку на изображение</div>
 <button class="action" type="submit">Сохранить товар</button><button class="action secondary" type="button" id="cancelEdit">Очистить форму</button>
 </form></div>
 <div class="admin-card"><h2>Контакт владельца</h2><label>Telegram username (без @)</label><input id="owner" placeholder="username"><button class="action" id="saveOwner">Сохранить контакт</button></div>
