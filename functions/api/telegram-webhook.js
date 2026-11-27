@@ -1,5 +1,3 @@
-const WEBHOOK_SECRET = "WEBHOOK_SECRET";
-
 export async function onRequestPost({ request, env }) {
   if (!env.BOT_TOKEN || !env.WEBHOOK_SECRET) {
     return Response.json({ error: "Не настроены BOT_TOKEN и WEBHOOK_SECRET" }, { status: 500 });
