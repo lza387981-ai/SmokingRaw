@@ -1,12 +1,5 @@
 const tg=window.Telegram?.WebApp; if(tg){tg.ready();tg.expand();}
-let products=[
-{id:1,name:"Городской рюкзак",desc:"Практичный аксессуар на каждый день",price:2490,cat:"Аксессуары",symbol:"▧"},
-{id:2,name:"Футболка Basic",desc:"Минималистичный повседневный стиль",price:1290,cat:"Одежда",symbol:"♧"},
-{id:3,name:"Настольный светильник",desc:"Лаконичный предмет для интерьера",price:3190,cat:"Для дома",symbol:"◉"},
-{id:4,name:"Кардхолдер",desc:"Компактный аксессуар для карт",price:990,cat:"Аксессуары",symbol:"▤"},
-{id:5,name:"Кепка Mono",desc:"Базовая кепка с лаконичным дизайном",price:1490,cat:"Одежда",symbol:"⌒"},
-{id:6,name:"Органайзер",desc:"Помогает поддерживать порядок",price:1790,cat:"Для дома",symbol:"▦"}
-];
+let products=[];
 async function loadProducts(){
  try{
   const r=await fetch('/api/products');
@@ -15,18 +8,16 @@ async function loadProducts(){
   if(Array.isArray(data.products)&&data.products.length) products=data.products;
  }catch(e){console.info('Используется демонстрационный каталог:',e.message);}
 }
-const categories=["Все","Аксессуары","Одежда","Для дома","Другое"];
-let category="Все",tab="catalog",favorites=JSON.parse(localStorage.getItem("sr_favs")||"[]"),cart=JSON.parse(localStorage.getItem("sr_cart")||"{}");
+let tab="catalog",favorites=JSON.parse(localStorage.getItem("sr_favs")||"[]"),cart=JSON.parse(localStorage.getItem("sr_cart")||"{}");
 const escapeAttr=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $=s=>document.querySelector(s), money=n=>new Intl.NumberFormat("ru-RU").format(n)+" ₽";
 function save(){localStorage.setItem("sr_favs",JSON.stringify(favorites));localStorage.setItem("sr_cart",JSON.stringify(cart));}
 function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1800);}
-function renderCats(){$("#categories").innerHTML=categories.map(c=>`<button class="chip ${c===category?"active":""}" data-cat="${c}">${c}</button>`).join("");}
 function render(){
- renderCats();let q=$("#search").value.trim().toLowerCase();
- let list=products.filter(p=>(category==="Все"||p.cat===category)&&(tab!=="favorites"||favorites.includes(p.id))&&(`${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(q)));
+ let q=$("#search").value.trim().toLowerCase();
+ let list=products.filter(p=>(tab!=="favorites"||favorites.includes(p.id))&&(`${p.name} ${p.description||p.desc||""} ${p.category||""}`.toLowerCase().includes(q)));
  $("#count").textContent=list.length+" товара";$("#favCount").textContent=favorites.length||"";$("#cartCount").textContent=Object.values(cart).reduce((a,b)=>a+b,0)||"";
- $("#products").innerHTML=list.length?list.map(p=>`<article class="product"><div class="product-art">${p.image_url?`<img class="product-photo" src="${escapeAttr(p.image_url)}" alt="${escapeAttr(p.name)}" loading="lazy">`:`<span class="symbol">${p.symbol||"◇"}</span>`}<button class="heart ${favorites.includes(p.id)?"on":""}" data-fav="${p.id}">${favorites.includes(p.id)?"♥":"♡"}</button></div><div class="product-info"><h3>${p.name}</h3><p>${p.desc}</p><div class="product-bottom"><span class="price">${money(p.price)}</span><button class="add" data-add="${p.id}">+</button></div></div></article>`).join(""):`<div class="empty">Здесь пока ничего нет</div>`;
+ $("#products").innerHTML=list.length?list.map(p=>`<article class="product"><div class="product-art">${p.image_url?`<img class="product-photo" src="${escapeAttr(p.image_url)}" alt="${escapeAttr(p.name)}" loading="lazy">`:`<span class="symbol">${p.symbol||"◇"}</span>`}<button class="heart ${favorites.includes(p.id)?"on":""}" data-fav="${p.id}">${favorites.includes(p.id)?"♥":"♡"}</button></div><div class="product-info"><h3>${p.name}</h3><p>${p.description||p.desc||""}</p><div class="product-bottom"><span class="price">${money(p.price)}</span><button class="add" data-add="${p.id}">+</button></div></div></article>`).join(""):`<div class="empty">Здесь пока ничего нет</div>`;
  document.querySelectorAll(".nav-item").forEach(n=>n.classList.toggle("active",n.dataset.tab===tab));
 }
 function openDrawer(title,html){$("#drawerTitle").textContent=title;$("#drawerContent").innerHTML=html;$("#drawer").classList.add("show");$("#overlay").classList.add("show");}
@@ -43,10 +34,9 @@ function saveCartImage(){
  c.fillStyle="#aaa";c.font="20px Arial";c.fillText("ИТОГО",58,y+15);c.fillStyle="#fff";c.font="800 28px Arial";c.textAlign="right";c.fillText(money(total),840,y+15);
  const a=document.createElement("a");a.download="SmokingRaw-list.png";a.href=canvas.toDataURL("image/png");a.click();toast("Картинка сохранена");
 }
-$("#categories").addEventListener("click",e=>{let b=e.target.closest("[data-cat]");if(b){category=b.dataset.cat;render();}});
 $("#products").addEventListener("click",e=>{let f=e.target.closest("[data-fav]"),a=e.target.closest("[data-add]");if(f){let id=+f.dataset.fav;favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];save();render();}if(a){let id=+a.dataset.add;cart[id]=(cart[id]||0)+1;save();render();toast("Добавлено в корзину");}});
 $("#search").addEventListener("input",render);
-document.querySelector(".bottom-nav").addEventListener("click",e=>{let b=e.target.closest("[data-tab]");if(!b)return;tab=b.dataset.tab;category="Все";render();if(tab==="cart")showCart();});
+document.querySelector(".bottom-nav").addEventListener("click",e=>{let b=e.target.closest("[data-tab]");if(!b)return;tab=b.dataset.tab;render();if(tab==="cart")showCart();});
 $("#closeDrawer").onclick=closeDrawer;$("#overlay").onclick=closeDrawer;
 $("#drawerContent").addEventListener("click",e=>{let inc=e.target.closest("[data-inc]"),dec=e.target.closest("[data-dec]");if(inc){let id=inc.dataset.inc;cart[id]=(cart[id]||0)+1;save();showCart();render();}if(dec){let id=dec.dataset.dec;cart[id]--;if(cart[id]<=0)delete cart[id];save();showCart();render();}if(e.target.id==="shareCart")shareCart();if(e.target.id==="saveImage")saveCartImage();});
 $("#profileBtn").onclick=()=>{let u=tg?.initDataUnsafe?.user;openDrawer("Профиль",`<div class="empty">${u?`<b>${u.first_name||"Пользователь"}</b><br>@${u.username||"username не указан"}`:"Откройте каталог внутри Telegram, чтобы отобразить данные профиля."}<br><br><span class="muted">Профиль пока работает в режиме просмотра.</span></div>`);};
