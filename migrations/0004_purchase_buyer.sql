@@ -1,0 +1,2 @@
+ALTER TABLE purchases ADD COLUMN buyer_username TEXT NOT NULL DEFAULT '';
+ALTER TABLE purchases ADD COLUMN buyer_id TEXT NOT NULL DEFAULT '';
