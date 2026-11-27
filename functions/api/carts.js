@@ -1,5 +1,6 @@
 export async function onRequestPost({ request, env }) {
   try {
+    await env.DB.prepare(`DELETE FROM shared_carts WHERE datetime(created_at) <= datetime('now', '-35 minutes')`).run();
     const body = await request.json();
     if (!Array.isArray(body.items) || body.items.length < 1 || body.items.length > 50)
       return Response.json({ error: "Корзина должна содержать от 1 до 50 позиций" }, { status: 400 });
