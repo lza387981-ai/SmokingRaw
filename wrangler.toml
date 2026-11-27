@@ -6,7 +6,3 @@ pages_build_output_dir = "./web"
 binding = "DB"
 database_name = "smokingraw-db"
 database_id = "40b1585c-38c1-4092-961b-a9ac517243d7"
-
-[[r2_buckets]]
-binding = "IMAGES"
-bucket_name = "smokingraw-images"
