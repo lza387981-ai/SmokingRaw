@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0d"><title>SmokingRaw — управление</title><link rel="stylesheet" href="style.css"></head>
+<body><header class="topbar"><a class="brand" href="index.html"><span class="brand-mark">S</span><span>SMOKING<span class="red">RAW</span><small>ADMIN PANEL</small></span></a><a class="icon-btn" href="index.html" style="display:grid;place-items:center;text-decoration:none">←</a></header>
+<main class="admin-main">
+<section class="hero"><div class="eyebrow">ПАНЕЛЬ УПРАВЛЕНИЯ</div><h1>Управляй<br><span class="red">каталогом.</span></h1><p>Изменения сохраняются в Cloudflare D1 после настройки сервера.</p></section>
+<section class="admin-card" id="loginCard"><h2>Доступ администратора</h2><label>Секретный ключ</label><input id="adminKey" type="password" placeholder="Вставь ADMIN_KEY"><button class="action" id="login">Подключиться</button><p class="hint">Ключ задаётся в Cloudflare Pages → Settings → Variables and Secrets. Не публикуй его.</p></section>
+<section id="panel" hidden>
+<div class="admin-card"><h2 id="formTitle">Добавить товар</h2><form id="productForm">
+<input type="hidden" id="productId"><label>Название</label><input id="name" required maxlength="80" placeholder="Например, Футболка Basic">
+<label>Описание</label><textarea id="description" maxlength="300" placeholder="Краткое описание"></textarea>
+<label>Категория</label><input id="category" required maxlength="40" placeholder="Одежда">
+<label>Цена, ₽</label><input id="price" type="number" min="0" step="1" required>
+<label>Фотография товара</label><input id="photoFile" type="file" accept="image/jpeg,image/png,image/webp"><div class="upload-note">JPG, PNG или WebP · до 5 МБ. Файл загрузится в Cloudflare R2.</div><label>Или ссылка на фото (https://)</label><input id="image" type="url" placeholder="https://...">
+<button class="action" type="submit">Сохранить товар</button><button class="action secondary" type="button" id="cancelEdit">Очистить форму</button>
+</form></div>
+<div class="admin-card"><h2>Контакт владельца</h2><label>Telegram username (без @)</label><input id="owner" placeholder="username"><button class="action" id="saveOwner">Сохранить контакт</button></div>
+<div class="admin-card"><div class="section-head"><h2>Товары</h2><button class="icon-btn" id="reload">↻</button></div><div id="adminProducts"></div></div>
+</section>
+<div id="status" class="admin-status"></div>
+</main><script src="admin.js"></script></body></html>

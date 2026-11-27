@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b0b0d">
+  <title>SmokingRaw — каталог</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#"><span class="brand-mark">S</span><span>SMOKING<span class="red">RAW</span><small>CATALOG</small></span></a>
+  <button class="icon-btn" id="profileBtn" aria-label="Профиль">♙</button>
+</header>
+<main>
+  <section class="hero">
+    <div class="eyebrow">ОНЛАЙН-КАТАЛОГ</div>
+    <h1>Выбирай.<br><span class="red">Сохраняй.</span></h1>
+    <p>Каталог товаров в одном месте</p>
+    <div class="hero-line"></div>
+  </section>
+  <section class="search-wrap">
+    <span>⌕</span><input id="search" placeholder="Поиск по каталогу..." autocomplete="off">
+  </section>
+  <nav class="categories" id="categories"></nav>
+  <section class="section-head"><div><span class="eyebrow">КОЛЛЕКЦИЯ</span><h2>Каталог</h2></div><span id="count" class="muted"></span></section>
+  <section id="products" class="products"></section>
+</main>
+<footer class="site-footer"><a href="admin.html">Управление каталогом</a></footer>
+<nav class="bottom-nav">
+  <button class="nav-item active" data-tab="catalog"><span>▦</span>Каталог</button>
+  <button class="nav-item" data-tab="favorites"><span>♡</span>Избранное <i id="favCount"></i></button>
+  <button class="nav-item" data-tab="cart"><span>▤</span>Корзина <i id="cartCount"></i></button>
+</nav>
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head"><div><span class="eyebrow">ВАШ ВЫБОР</span><h2 id="drawerTitle">Корзина</h2></div><button class="icon-btn" id="closeDrawer">×</button></div>
+  <div id="drawerContent"></div>
+</aside>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body></html>
