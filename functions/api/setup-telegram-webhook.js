@@ -3,8 +3,10 @@ export async function onRequestPost({ request, env }) {
     return Response.json({ error: "Не настроены BOT_TOKEN, WEBHOOK_SECRET и SETUP_KEY" }, { status: 500 });
   }
 
-  if (request.headers.get("Authorization") !== `Bearer ${env.SETUP_KEY}`) {
-    return new Response("Forbidden", { status: 403 });
+  const setupKey = String(env.SETUP_KEY).trim();
+  const authorization = String(request.headers.get("Authorization") || "").trim();
+  if (authorization !== `Bearer ${setupKey}`) {
+    return Response.json({ error: "SETUP_KEY не совпадает. Проверь, что Secret сохранён в Production окружении проекта smokingraw." }, { status: 403 });
   }
 
   const webhookSecret = String(env.WEBHOOK_SECRET).trim();
