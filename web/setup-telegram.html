@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Подключение Telegram</title>
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b0b0d;color:#f4f4f5;font:16px system-ui;padding:20px;box-sizing:border-box}
+main{width:min(100%,420px);background:#17171b;border:1px solid #303037;border-radius:18px;padding:24px;box-sizing:border-box}
+h1{font-size:22px;margin:0 0 10px}p{color:#aaa;line-height:1.5}
+input,button{width:100%;box-sizing:border-box;padding:14px;border-radius:10px;font:inherit;margin-top:12px}
+input{background:#0d0d10;color:white;border:1px solid #444}
+button{background:#e33;color:white;border:0;font-weight:700}
+#result{white-space:pre-wrap;margin-top:16px;color:#ddd}
+</style>
+</head>
+<body><main>
+<h1>Подключение Telegram-бота</h1>
+<p>Введи значение SETUP_KEY, которое ты сам сохранил в Cloudflare как Secret. Оно отправится только на этот сайт и не сохраняется в браузере.</p>
+<input id="key" type="password" autocomplete="off" placeholder="SETUP_KEY">
+<button id="run">Подключить бота</button>
+<div id="result" role="status"></div>
+</main>
+<script>
+document.getElementById("run").addEventListener("click",async()=>{
+ const key=document.getElementById("key").value.trim();
+ const out=document.getElementById("result");
+ if(!key){out.textContent="Введи SETUP_KEY.";return;}
+ const button=document.getElementById("run");button.disabled=true;out.textContent="Подключаю…";
+ try{
+  const response=await fetch("/api/setup-telegram-webhook",{method:"POST",headers:{"Authorization":"Bearer "+key}});
+  const data=await response.json();
+  out.textContent=response.ok&&data.ok?"Готово! Telegram подтвердил подключение.":("Не удалось подключить: "+(data.description||data.error||"ошибка сервера"));
+ }catch(e){out.textContent="Ошибка соединения. Проверь, завершился ли деплой Cloudflare.";}
+ button.disabled=false;
+});
+</script>
+</body></html>
