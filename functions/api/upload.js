@@ -12,6 +12,6 @@ export async function onRequestPost({ request, env }) {
   if (file.size > 5 * 1024 * 1024) return Response.json({ error: "Максимальный размер файла — 5 МБ" }, { status: 413 });
   const key = `products/${crypto.randomUUID()}.${ext}`;
   await env.IMAGES.put(key, file.stream(), { httpMetadata: { contentType: file.type, cacheControl: "public, max-age=31536000, immutable" } });
-  const base = String(env.R2_PUBLIC_URL).replace(/\\/+$/, "");
+  const base = String(env.R2_PUBLIC_URL).replace(/\/+$/, "");
   return Response.json({ ok: true, key, url: `${base}/${key}` }, { status: 201 });
 }
