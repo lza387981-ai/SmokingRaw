@@ -13,10 +13,12 @@ export async function onRequestPost({ request, env }) {
       return Response.json({ error: "Некорректные данные корзины" }, { status: 400 });
     const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const id = crypto.randomUUID().replace(/-/g, "");
+    const code = "1#wpo" + crypto.randomUUID().replace(/-/g, "").slice(0, 6).toLowerCase();
     await env.DB.prepare(
       "INSERT INTO shared_carts (id, items_json, total, created_at) VALUES (?, ?, ?, ?)"
     ).bind(id, JSON.stringify(items), total, new Date().toISOString()).run();
-    return Response.json({ ok: true, id });
+    await env.DB.prepare("INSERT INTO purchases (code, items_json, total, created_at, expires_at) VALUES (?, ?, ?, ?, datetime('now', '+8 hours'))").bind(code, JSON.stringify(items), total, new Date().toISOString()).run();
+    return Response.json({ ok: true, id, code });
   } catch (error) {
     return Response.json({ error: "Не удалось сохранить корзину. Проверь, что таблица shared_carts создана в D1." }, { status: 500 });
   }
