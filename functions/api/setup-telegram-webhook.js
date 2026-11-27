@@ -9,9 +9,15 @@ export async function onRequestPost({ request, env }) {
     return Response.json({ error: "SETUP_KEY не совпадает. Проверь, что Secret сохранён в Production окружении проекта smokingraw." }, { status: 403 });
   }
 
-  const webhookSecret = String(env.WEBHOOK_SECRET).trim();
-  if (!/^[A-Za-z0-9_-]{1,256}$/.test(webhookSecret)) {
-    return Response.json({ error: "WEBHOOK_SECRET должен содержать только латинские буквы, цифры, _ и -" }, { status: 500 });
+  const rawWebhookSecret = String(env.WEBHOOK_SECRET);
+  const webhookSecret = rawWebhookSecret.trim();
+  const invalidChars = [...webhookSecret].map((char, index) => ({ char, index, code: "U+" + char.codePointAt(0).toString(16).toUpperCase().padStart(4, "0") })).filter(item => !/[A-Za-z0-9_-]/.test(item.char));
+  if (webhookSecret.length < 1 || webhookSecret.length > 256 || invalidChars.length > 0) {
+    return Response.json({
+      error: "WEBHOOK_SECRET не проходит проверку",
+      length: webhookSecret.length,
+      invalidCharacters: invalidChars.map(({ index, code }) => ({ index, code }))
+    }, { status: 500 });
   }
 
   const webhookUrl = new URL("/api/telegram-webhook", request.url).toString();
