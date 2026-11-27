@@ -3,7 +3,8 @@ export async function onRequestPost({ request, env }) {
     return Response.json({ error: "Не настроены BOT_TOKEN и WEBHOOK_SECRET" }, { status: 500 });
   }
 
-  if (request.headers.get("X-Telegram-Bot-Api-Secret-Token") !== env.WEBHOOK_SECRET) {
+  const webhookSecret = String(env.WEBHOOK_SECRET).trim();
+  if (request.headers.get("X-Telegram-Bot-Api-Secret-Token") !== webhookSecret) {
     return new Response("Forbidden", { status: 403 });
   }
 
